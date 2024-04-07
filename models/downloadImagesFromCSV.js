@@ -2,9 +2,11 @@ const fs = require("fs");
 const axios = require("axios").default;
 const csv = require("csv-parser");
 
-async function downloadImagesFromCSV(ch-swisstopo-swissimage-dop10-wxGGDPiR.csv) {
+const csvFilePath = "/Users/tobiasbielmann/Documents/BSc-WI/5-Module/6-Semester/ERAP/Kursmaterial/Selbststudium-2/AxiosChallenge/data/chswisstoposwissimage.csv";
+
+async function downloadImagesFromCSV(csvFilePath) {
   // Lese das CSV-File Zeile für Zeile ein
-  fs.createReadStream(ch-swisstopo-swissimage-dop10-wxGGDPiR.csv)
+  fs.createReadStream(csvFilePath)
     .pipe(csv())
     .on("data", async (row) => {
       // Extrahiere den Link aus der aktuellen Zeile
@@ -17,7 +19,9 @@ async function downloadImagesFromCSV(ch-swisstopo-swissimage-dop10-wxGGDPiR.csv)
         await downloadImage(imageUrl, filename);
         console.log(`Bild erfolgreich heruntergeladen: ${filename}`);
       } catch (error) {
-        console.error(`Fehler beim Herunterladen des Bildes ${filename}: ${error}`);
+        console.error(
+          `Fehler beim Herunterladen des Bildes ${filename}: ${error}`
+        );
       }
     })
     .on("end", () => {
@@ -29,6 +33,3 @@ async function downloadImage(url, filePath) {
   const response = await axios.get(url, { responseType: "arraybuffer" });
   fs.writeFileSync(filePath, response.data, { encoding: "binary" });
 }
-
-// Beispielaufruf der Funktion mit dem Pfad zum CSV-File
-downloadImagesFromCSV("ch.swisstopo.swissimage-dop10-wxGGDPiR.csv");
